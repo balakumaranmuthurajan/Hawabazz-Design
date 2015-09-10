@@ -1,6 +1,7 @@
 package balakumaran.hawabazz_design;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -18,8 +19,17 @@ import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.util.Stack;
+
 public class MainActivity extends AppCompatActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, FoodMenuFragment.OnFragmentInteractionListener,
+        HomeFragment.OnFragmentInteractionListener,
+        LocationFragment.OnFragmentInteractionListener,
+        LoginFragment.OnFragmentInteractionListener,
+        MyLocationsFragment.OnFragmentInteractionListener,
+        NotificationsFragment.OnFragmentInteractionListener,
+        OrderHistoryFragment.OnFragmentInteractionListener,
+        RegisterFragment.OnFragmentInteractionListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -30,6 +40,7 @@ public class MainActivity extends AppCompatActivity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+    Stack<CharSequence> titleStack = new Stack<CharSequence>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +50,7 @@ public class MainActivity extends AppCompatActivity
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
+        //titleStack.push(mTitle);
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
@@ -49,9 +61,38 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
+        Fragment mCurr = null;
+        switch (position){
+            case 0:
+                mCurr = new HomeFragment();
+                break;
+            case 1:
+                mCurr = new LocationFragment();
+                break;
+            case 2:
+                mCurr = new FoodMenuFragment();
+                break;
+            case 3:
+                mCurr = new OrderHistoryFragment();
+                break;
+            case 4:
+                mCurr = new NotificationsFragment();
+                break;
+            case 5:
+                mCurr = new MyLocationsFragment();
+                break;
+            case 6:
+                mCurr = new RegisterFragment();
+                break;
+            case 7:
+                mCurr = new LoginFragment();
+                break;
+        }
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+                .addToBackStack(null)
+                .replace(R.id.container, mCurr)
                 .commit();
     }
 
@@ -66,14 +107,31 @@ public class MainActivity extends AppCompatActivity
             case 3:
                 mTitle = getString(R.string.title_section3);
                 break;
+            case 4:
+                mTitle = getString(R.string.title_section4);
+                break;
+            case 5:
+                mTitle = getString(R.string.title_section5);
+                break;
+            case 6:
+                mTitle = getString(R.string.title_section6);
+                break;
+            case 7:
+                mTitle = getString(R.string.title_section7);
+                break;
+            case 8:
+                mTitle = getString(R.string.title_section8);
+                break;
+
         }
+        titleStack.push(mTitle);
     }
 
     public void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(mTitle);
+        actionBar.setTitle(titleStack.peek());
     }
 
 
@@ -108,41 +166,21 @@ public class MainActivity extends AppCompatActivity
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
+    @Override
+    public void onBackPressed() {
+        try{
+            titleStack.pop();
+            restoreActionBar();
         }
-
-        public PlaceholderFragment() {
+        catch(Exception e){
+            finish();
         }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            return rootView;
-        }
-
-        @Override
-        public void onAttach(Activity activity) {
-            super.onAttach(activity);
-            ((MainActivity) activity).onSectionAttached(
-                    getArguments().getInt(ARG_SECTION_NUMBER));
-        }
+        super.onBackPressed();
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
 }
