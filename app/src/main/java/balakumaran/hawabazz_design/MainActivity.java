@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Stack;
 
@@ -29,7 +30,9 @@ public class MainActivity extends AppCompatActivity
         MyLocationsFragment.OnFragmentInteractionListener,
         NotificationsFragment.OnFragmentInteractionListener,
         OrderHistoryFragment.OnFragmentInteractionListener,
-        RegisterFragment.OnFragmentInteractionListener {
+        RegisterFragment.OnFragmentInteractionListener,
+        TrackOrderFragment.OnFragmentInteractionListener,
+        CancelOrderFragment.OnFragmentInteractionListener{
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -155,12 +158,43 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id){
+            case R.id.trackorder:
+            {
+                android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+                android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                TrackOrderFragment fragment = new TrackOrderFragment();
+                fragmentTransaction.replace(R.id.container, fragment);
+                fragmentTransaction.addToBackStack(null);
+                mTitle="Track Order";
+                titleStack.push(mTitle);
+                //titileStack.push(mTitle);
+                restoreActionBar();
+                fragmentTransaction.commit();
+                return true;
+            }
+            case R.id.cancelorder:
+            {
+                android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+                android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                CancelOrderFragment fragment = new CancelOrderFragment();
+                fragmentTransaction.replace(R.id.container, fragment);
+                fragmentTransaction.addToBackStack(null);
+                mTitle="Cancel Order";
+                //titileStack.push(mTitle);
+                titleStack.push(mTitle);
+                restoreActionBar();
+                fragmentTransaction.commit();
+                return true;
+            }
+            case R.id.callcare:{
+                Toast.makeText(getApplicationContext(), "YET TO COME",
+                        Toast.LENGTH_LONG).show();
+                return true;
+            }
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     /**
