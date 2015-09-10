@@ -97,7 +97,7 @@ public class NavigationDrawerFragment extends Fragment {
                 selectItem(position);
             }
         });
-        mDrawerListView.setAdapter(new ArrayAdapter<String>(
+        /*mDrawerListView.setAdapter(new ArrayAdapter<String>(
                 getActionBar().getThemedContext(),
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
@@ -110,7 +110,17 @@ public class NavigationDrawerFragment extends Fragment {
                         getString(R.string.title_section6),
                         getString(R.string.title_section7),
                         getString(R.string.title_section8),
-                }));
+                }));*/
+        int [] menuImages={R.drawable.abc_ab_share_pack_mtrl_alpha,R.drawable.abc_ab_share_pack_mtrl_alpha,R.drawable.abc_ab_share_pack_mtrl_alpha,R.drawable.abc_ab_share_pack_mtrl_alpha,R.drawable.abc_ab_share_pack_mtrl_alpha,R.drawable.abc_ab_share_pack_mtrl_alpha,R.drawable.abc_ab_share_pack_mtrl_alpha,R.drawable.abc_ab_share_pack_mtrl_alpha,R.drawable.abc_ab_share_pack_mtrl_alpha};
+        String [] menuList={getString(R.string.title_section1),
+                getString(R.string.title_section2),
+                getString(R.string.title_section3),
+                getString(R.string.title_section4),
+                getString(R.string.title_section5),
+                getString(R.string.title_section6),
+                getString(R.string.title_section7),
+                getString(R.string.title_section8)};
+        mDrawerListView.setAdapter(new CustomAdapter(this,menuList,menuImages));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
     }
