@@ -84,6 +84,7 @@ public class LocationListLoading extends Fragment implements AppData {
                         }
 
                         getActivity().getSupportFragmentManager().beginTransaction()
+                                .addToBackStack(null)
                                 .replace(R.id.container, LocationFragment.newInstance(listString))
                                 .commit();
 
@@ -99,6 +100,8 @@ public class LocationListLoading extends Fragment implements AppData {
                 } catch (ServerException e){
                     Log.d("Server error",e.toString());
                     retry();
+                } catch (Exception e){
+                    e.printStackTrace();
                 }
 
 

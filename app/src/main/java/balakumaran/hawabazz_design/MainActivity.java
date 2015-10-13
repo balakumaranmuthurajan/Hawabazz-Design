@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
-
+    private Stack<Fragment> mBackStack=new Stack<Fragment>();
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
@@ -38,8 +38,11 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mBackStack.clear();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -83,9 +86,9 @@ public class MainActivity extends AppCompatActivity
                 break;
         }
 
+        mBackStack.push(mCurr);
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .addToBackStack(null)
                 .replace(R.id.container, mCurr)
                 .commit();
     }
@@ -195,13 +198,17 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         try{
+            mBackStack.pop();
+
+            getSupportFragmentManager().beginTransaction().replace(R.id.container,mBackStack.peek()).commit();
             titleStack.pop();
             restoreActionBar();
+
         }
         catch(Exception e){
             finish();
         }
-        super.onBackPressed();
+
     }
 
     @Override
