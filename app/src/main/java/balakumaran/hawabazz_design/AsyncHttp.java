@@ -27,11 +27,11 @@ public class AsyncHttp extends AsyncTask{
     HttpClient client;
     String resp=null,url;
     public AsyncHttpListener caller;
-    AsyncHttp( String url, List jsonObject,AsyncHttpListener caller) {
+    AsyncHttp( String url, HttpParam jsonObject,AsyncHttpListener caller) {
         this.url=url;
         this.caller=caller;
         HttpParams httpParameters = new BasicHttpParams();
-        this.jsonObject=jsonObject;
+        this.jsonObject=(List)jsonObject;
 // Set the timeout in milliseconds until a connection is established.
 // The default value is zero, that means the timeout is not used.
         int timeoutConnection = 20000;
@@ -66,6 +66,8 @@ public class AsyncHttp extends AsyncTask{
         } catch (ClientProtocolException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e){
             e.printStackTrace();
         }
         return null;

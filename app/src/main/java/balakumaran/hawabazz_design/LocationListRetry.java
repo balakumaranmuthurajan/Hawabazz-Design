@@ -1,5 +1,6 @@
 package balakumaran.hawabazz_design;
 
+import android.support.v7.app.AppCompatActivity;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,17 +8,18 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link MyLocationsFragment.OnFragmentInteractionListener} interface
+ * {@link LocationListRetry.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link MyLocationsFragment#newInstance} factory method to
+ * Use the {@link LocationListRetry#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MyLocationsFragment extends Fragment {
+public class LocationListRetry extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -35,11 +37,11 @@ public class MyLocationsFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment MyLocationsFragment.
+     * @return A new instance of fragment LocationListRetry.
      */
     // TODO: Rename and change types and number of parameters
-    public static MyLocationsFragment newInstance(String param1, String param2) {
-        MyLocationsFragment fragment = new MyLocationsFragment();
+    public static LocationListRetry newInstance(String param1, String param2) {
+        LocationListRetry fragment = new LocationListRetry();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -47,7 +49,7 @@ public class MyLocationsFragment extends Fragment {
         return fragment;
     }
 
-    public MyLocationsFragment() {
+    public LocationListRetry() {
         // Required empty public constructor
     }
 
@@ -64,7 +66,17 @@ public class MyLocationsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my_locations, container, false);
+        View view=inflater.inflate(R.layout.fragment_location_list_retry, container, false);
+        Button retry=(Button)view.findViewById(R.id.retryButton);
+        retry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.container,new LocationListLoading())
+                        .commit();
+            }
+        });
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -83,7 +95,6 @@ public class MyLocationsFragment extends Fragment {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
         }
-        ((MainActivity) activity).onSectionAttached(6);
     }
 
     @Override
@@ -91,7 +102,5 @@ public class MyLocationsFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
-
-
 
 }

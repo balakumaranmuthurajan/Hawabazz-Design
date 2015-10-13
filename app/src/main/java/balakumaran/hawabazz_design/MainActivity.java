@@ -23,16 +23,7 @@ import android.widget.Toast;
 import java.util.Stack;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, FoodMenuFragment.OnFragmentInteractionListener,
-        HomeFragment.OnFragmentInteractionListener,
-        LocationFragment.OnFragmentInteractionListener,
-        LoginFragment.OnFragmentInteractionListener,
-        MyLocationsFragment.OnFragmentInteractionListener,
-        NotificationsFragment.OnFragmentInteractionListener,
-        OrderHistoryFragment.OnFragmentInteractionListener,
-        RegisterFragment.OnFragmentInteractionListener,
-        TrackOrderFragment.OnFragmentInteractionListener,
-        CancelOrderFragment.OnFragmentInteractionListener{
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks,OnFragmentInteractionListener{
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -70,7 +61,7 @@ public class MainActivity extends AppCompatActivity
                 mCurr = new HomeFragment();
                 break;
             case 1:
-                mCurr = new LocationFragment();
+                mCurr = new LocationListLoading();
                 break;
             case 2:
                 mCurr = new FoodMenuFragment();

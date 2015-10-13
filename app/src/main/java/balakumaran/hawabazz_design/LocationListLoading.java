@@ -1,17 +1,14 @@
 package balakumaran.hawabazz_design;
 
 import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -21,14 +18,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * to handle interaction events.
- * Use the {@link LocationFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class LocationFragment extends Fragment implements AppData {
+public class LocationListLoading extends Fragment implements AppData {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -38,8 +28,6 @@ public class LocationFragment extends Fragment implements AppData {
     private String mParam1;
     private String mParam2;
 
-
-
     private OnFragmentInteractionListener mListener;
 
     /**
@@ -48,18 +36,19 @@ public class LocationFragment extends Fragment implements AppData {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment LocationFragment.
+     * @return A new instance of fragment LocationListLoading.
      */
     // TODO: Rename and change types and number of parameters
-    public static LocationFragment newInstance( ArrayList<String> listString) {
-        LocationFragment fragment = new LocationFragment();
+    public static LocationListLoading newInstance(String param1, String param2) {
+        LocationListLoading fragment = new LocationListLoading();
         Bundle args = new Bundle();
-        args.putStringArrayList(ARG_PARAM1,listString);
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public LocationFragment() {
+    public LocationListLoading() {
         // Required empty public constructor
     }
 
@@ -76,23 +65,53 @@ public class LocationFragment extends Fragment implements AppData {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view=inflater.inflate(R.layout.fragment_location, container, false);
-        Bundle bundle=getArguments();
-        ArrayList<String> listString=bundle.getStringArrayList(ARG_PARAM1);
-        final ListView locationList=(ListView)view.findViewById(R.id.locationList);
-        locationList.setAdapter(new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,listString));
 
-
-        locationList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        new AsyncHttp(loactionListUrl, new HttpParam(), new AsyncHttpListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onResponse(String response) {
+                if(response==null){
+                    retry();
+                    return;
+                }
+                try {
+                    JSONObject responseObject=new JSONObject(response);
+                    if(responseObject.getInt(ERROR)==0) {
+                        ArrayList<String> listString=new ArrayList<>();
+                        JSONArray listJson=responseObject.getJSONArray("list");
+                        for(int i=0;i<listJson.length();i++){
+                            JSONArray listJsonElem=listJson.getJSONArray(i);
+                            listString.add(listJsonElem.getString(1));
+                        }
+
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.container, LocationFragment.newInstance(listString))
+                                .commit();
+
+
+                    }else{
+                        myToast(SORRY);
+                        throw new ServerException(responseObject.getInt(ERROR));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.d("JSON parse", e.toString());
+                    retry();
+                } catch (ServerException e){
+                    Log.d("Server error",e.toString());
+                    retry();
+                }
+
 
             }
         });
-
-        return view;
+        return inflater.inflate(R.layout.fragment_location_list_loading, container, false);
     }
 
+    private void retry(){
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container,new LocationListRetry())
+                .commit();
+    }
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -109,7 +128,6 @@ public class LocationFragment extends Fragment implements AppData {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
         }
-        ((MainActivity) activity).onSectionAttached(2);
     }
 
     @Override
@@ -117,9 +135,6 @@ public class LocationFragment extends Fragment implements AppData {
         super.onDetach();
         mListener = null;
     }
-
-
-
 
     void myToast(String msg){
         Toast.makeText(getActivity(),msg,Toast.LENGTH_SHORT).show();
